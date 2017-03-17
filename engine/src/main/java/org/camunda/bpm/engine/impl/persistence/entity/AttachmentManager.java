@@ -56,10 +56,16 @@ public class AttachmentManager extends AbstractHistoricManager {
   public void deleteAttachmentsByProcessInstanceIds(List<String> processInstanceIds) {
     CommandContext commandContext = Context.getCommandContext();
 
-    //TODO svt 1. select contentIds 2. remove ByteArrays
-
+    //TODO svt not working!
+//    List<String> contentIds = findAttachmentContentIdsByProcessInstanceIds(processInstanceIds);
+//    commandContext
+//        .getDbEntityManager().delete(ByteArrayEntity.class, "deleteAttachmentByteArraysByIds", contentIds);
     commandContext
-        .getDbEntityManager().delete(HistoricVariableInstanceEntity.class, "deleteAttachmentByProcessInstanceIds", processInstanceIds);
+        .getDbEntityManager().delete(AttachmentEntity.class, "deleteAttachmentByProcessInstanceIds", processInstanceIds);
+  }
+
+  public List<String> findAttachmentContentIdsByProcessInstanceIds(List<String> processInstanceIds) {
+    return getDbEntityManager().selectList("selectContentIdsByProcessInstanceIds", processInstanceIds);
   }
 
   public Attachment findAttachmentByTaskIdAndAttachmentId(String taskId, String attachmentId) {

@@ -120,7 +120,7 @@
         and PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR}
       </if>
       <if test="processInstanceIdIn != null &amp;&amp; processInstanceIdIn.length > 0">
-        and PROCESS_INSTANCE_ID_ in
+        and PROC_INST_ID_ in
         <foreach item="item" index="index" collection="processInstanceIdIn"
                  open="(" separator="," close=")">
           #{item}

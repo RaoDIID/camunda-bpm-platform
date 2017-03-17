@@ -60,6 +60,16 @@
     <include refid="selectAttachmentsByProcessInstanceIdsSql"/>
   </delete>
 
+  <delete id="deleteAttachmentByteArraysByIds">
+    delete
+    from
+    ${prefix}ACT_GE_BYTEARRAY
+    where ID_ in
+      <foreach item="contentId" index="index" collection="list" open="(" separator="," close=")">
+        #{contentId}
+      </foreach>
+  </delete>
+
   <!-- ATTACHMENT RESULTMAP -->
 
   <resultMap id="attachmentResultMap" type="org.camunda.bpm.engine.impl.persistence.entity.AttachmentEntity">
@@ -77,6 +87,11 @@
   
   <!-- ATTACHMENT SELECT -->
 
+  <select id="selectContentIdsByProcessInstanceIds" parameterType="list" resultType="string">
+    select distinct CONTENT_ID_
+    <include refid="selectAttachmentsByProcessInstanceIdsSql"/>
+  </select>
+
   <select id="selectAttachment" parameterType="string" resultMap="attachmentResultMap">
     select * from ${prefix}ACT_HI_ATTACHMENT where ID_ = #{id,jdbcType=VARCHAR}
   </select>
@@ -87,11 +102,6 @@
   
   <select id="selectAttachmentsByProcessInstanceId" parameterType="org.camunda.bpm.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
     select * from ${prefix}ACT_HI_ATTACHMENT where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
-  </select>
-
-  <select id="selectContentIdsByProcessInstanceIds">
-    select distinct CONTENT_ID_ from ${prefix}ACT_HI_ATTACHMENT
-    <include refid="selectAttachmentsByProcessInstanceIdsSql"/>
   </select>
 
   <select id="selectAttachmentByTaskIdAndAttachmentId" parameterType="map" resultMap="attachmentResultMap">
