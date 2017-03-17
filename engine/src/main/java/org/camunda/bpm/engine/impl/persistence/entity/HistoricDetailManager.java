@@ -20,7 +20,10 @@ import java.util.List;
 import org.camunda.bpm.engine.history.HistoricDetail;
 import org.camunda.bpm.engine.impl.HistoricDetailQueryImpl;
 import org.camunda.bpm.engine.impl.Page;
+import org.camunda.bpm.engine.impl.context.Context;
 import org.camunda.bpm.engine.impl.history.event.HistoricDetailEventEntity;
+import org.camunda.bpm.engine.impl.history.event.HistoricFormPropertyEventEntity;
+import org.camunda.bpm.engine.impl.history.event.HistoricVariableUpdateEventEntity;
 import org.camunda.bpm.engine.impl.persistence.AbstractHistoricManager;
 
 
@@ -31,6 +34,17 @@ public class HistoricDetailManager extends AbstractHistoricManager {
 
   public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
     deleteHistoricDetailsByProcessCaseInstanceId(historicProcessInstanceId, null);
+  }
+
+  //TODO svt what about case definition?
+  public void deleteHistoricDetailsByProcessInstanceIds(List<String> historicProcessInstanceIds) {
+    Context.getCommandContext().getDbEntityManager()
+        .delete(HistoricDetailEventEntity.class, "deleteHistoricDetailsByProcessInstanceIds", historicProcessInstanceIds);
+  }
+
+  public void deleteHistoricDetailsByTaskProcessInstanceIds(List<String> historicProcessInstanceIds) {
+    Context.getCommandContext().getDbEntityManager()
+        .delete(HistoricDetailEventEntity.class, "deleteHistoricDetailsByTaskProcessInstanceIds", historicProcessInstanceIds);
   }
 
   public void deleteHistoricDetailsByCaseInstanceId(String historicCaseInstanceId) {

@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.camunda.bpm.engine.impl.context.Context;
+import org.camunda.bpm.engine.impl.interceptor.CommandContext;
 import org.camunda.bpm.engine.impl.persistence.AbstractHistoricManager;
 import org.camunda.bpm.engine.task.Attachment;
 
@@ -49,6 +51,15 @@ public class AttachmentManager extends AbstractHistoricManager {
       }
       getDbEntityManager().delete(attachment);
     }
+  }
+
+  public void deleteAttachmentsByProcessInstanceIds(List<String> processInstanceIds) {
+    CommandContext commandContext = Context.getCommandContext();
+
+    //TODO svt 1. select contentIds 2. remove ByteArrays
+
+    commandContext
+        .getDbEntityManager().delete(HistoricVariableInstanceEntity.class, "deleteAttachmentByProcessInstanceIds", processInstanceIds);
   }
 
   public Attachment findAttachmentByTaskIdAndAttachmentId(String taskId, String attachmentId) {

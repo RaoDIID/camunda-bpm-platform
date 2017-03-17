@@ -34,6 +34,10 @@ public class HistoricActivityInstanceManager extends AbstractHistoricManager {
     }
   }
 
+  public void deleteHistoricActivityInstancesByProcessInstanceIds(List<String> historicProcessInstanceIds) {
+    getDbEntityManager().delete(HistoricActivityInstanceEntity.class, "deleteHistoricActivityInstancesByProcessInstanceIds", historicProcessInstanceIds);
+  }
+
   public void insertHistoricActivityInstance(HistoricActivityInstanceEntity historicActivityInstance) {
     getDbEntityManager().insert(historicActivityInstance);
   }

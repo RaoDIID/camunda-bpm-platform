@@ -548,6 +548,19 @@ public class HistoryServiceTest extends PluggableProcessEngineTestCase {
 
   @Deployment(resources = {
       "org/camunda/bpm/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testCleanupHistory() {
+    //given
+    List<String> ids = prepareHistoricProcesses();
+
+    //when
+    historyService.cleanupHistory(ids);
+
+    //then
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processDefinitionKey(ONE_TASK_PROCESS).count());
+  }
+
+  @Deployment(resources = {
+      "org/camunda/bpm/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testDeleteProcessInstancesWithFake() {
     //given
     List<String> ids = prepareHistoricProcesses();
@@ -578,11 +591,13 @@ public class HistoryServiceTest extends PluggableProcessEngineTestCase {
   }
 
   protected List<String> prepareHistoricProcesses() {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(ONE_TASK_PROCESS);
-    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey(ONE_TASK_PROCESS);
+    List<String> processInstanceIds = new ArrayList<String>();
 
-    List<String> processInstanceIds = new ArrayList<String>(Arrays.asList(
-        new String[]{processInstance.getId(), processInstance2.getId()}));
+    for (int i = 0; i<20; i++) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(ONE_TASK_PROCESS);
+      processInstanceIds.add(processInstance.getId());
+    }
+
     runtimeService.deleteProcessInstances(processInstanceIds, null, true, true);
 
     return processInstanceIds;

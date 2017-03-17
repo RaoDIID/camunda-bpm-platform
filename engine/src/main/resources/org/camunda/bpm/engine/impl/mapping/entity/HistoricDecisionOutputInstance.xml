@@ -46,6 +46,16 @@
     delete from ${prefix}ACT_HI_DEC_OUT where ID_ = #{id}
   </delete>
 
+  <delete id="deleteHistoricDecisionOutputInstanceByProcessInstanceIds">
+    delete from ${prefix}ACT_HI_DEC_OUT where DEC_INST_ID_ in
+      (select ID_ from ${prefix}ACT_HI_DECINST
+      where PROC_INST_ID_ in
+      <foreach item="processInstanceId" index="index" collection="list" open="(" separator="," close=")">
+          #{processInstanceId}
+      </foreach>
+      )
+  </delete>
+
   <!-- result map -->
 
   <resultMap id="historicDecisionOutputInstanceResultMap" type="org.camunda.bpm.engine.impl.history.event.HistoricDecisionOutputInstanceEntity">

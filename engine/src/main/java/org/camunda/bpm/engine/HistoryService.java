@@ -149,6 +149,8 @@ public interface HistoryService {
    *          If the user has no {@link Permissions#DELETE_HISTORY} permission on {@link Resources#PROCESS_DEFINITION}.
    */
   void deleteHistoricProcessInstances(List<String> processInstanceIds);
+//TODO svt javadoc
+  void cleanupHistory(List<String> processInstanceIds);
 
   /**
    * Deletes historic process instances asynchronously. All historic activities, historic task and

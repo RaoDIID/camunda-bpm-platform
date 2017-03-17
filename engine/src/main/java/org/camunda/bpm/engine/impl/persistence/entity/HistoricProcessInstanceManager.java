@@ -82,10 +82,29 @@ public class HistoricProcessInstanceManager extends AbstractHistoricManager {
       getHistoricExternalTaskLogManager()
         .deleteHistoricExternalTaskLogsByProcessInstanceId(historicProcessInstanceId);
 
+      //TODO svt remove all related Historic Decision Instances
 
+
+      //TODO svt will this remove the entity from first level cache?
       commandContext.getDbEntityManager().delete(HistoricProcessInstanceEntity.class, "deleteHistoricProcessInstance", historicProcessInstanceId);
 
     }
+  }
+
+  public void deleteHistoricProcessInstanceByIds(List<String> processInstanceIds) {
+    //TODO svt what will happen with the DbEntityCache
+    CommandContext commandContext = Context.getCommandContext();
+    commandContext.getHistoricDetailManager().deleteHistoricDetailsByProcessInstanceIds(processInstanceIds);
+    commandContext.getHistoricVariableInstanceManager().deleteHistoricVariableInstanceByProcessInstanceIds(processInstanceIds);
+    commandContext.getHistoricActivityInstanceManager().deleteHistoricActivityInstancesByProcessInstanceIds(processInstanceIds);
+    commandContext.getHistoricTaskInstanceManager().deleteHistoricTaskInstancesByProcessInstanceIds(processInstanceIds);
+    commandContext.getHistoricIncidentManager().deleteHistoricIncidentsByProcessInstanceIds(processInstanceIds);
+    commandContext.getHistoricJobLogManager().deleteHistoricJobLogsByProcessInstanceIds(processInstanceIds);
+    commandContext.getHistoricExternalTaskLogManager().deleteHistoricExternalTaskLogsByProcessInstanceIds(processInstanceIds);
+
+    commandContext.getHistoricDecisionInstanceManager().deleteHistoricDecisionInstanceByProcessInstanceIds(processInstanceIds);
+
+    commandContext.getDbEntityManager().delete(HistoricProcessInstanceEntity.class, "deleteHistoricProcessInstances", processInstanceIds);
   }
 
   public long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {

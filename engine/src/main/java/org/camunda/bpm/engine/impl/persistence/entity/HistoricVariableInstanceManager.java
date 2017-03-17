@@ -21,6 +21,7 @@ import org.camunda.bpm.engine.history.HistoricVariableInstance;
 import org.camunda.bpm.engine.history.HistoricVariableInstanceQuery;
 import org.camunda.bpm.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.camunda.bpm.engine.impl.Page;
+import org.camunda.bpm.engine.impl.context.Context;
 import org.camunda.bpm.engine.impl.persistence.AbstractHistoricManager;
 
 
@@ -31,6 +32,18 @@ public class HistoricVariableInstanceManager extends AbstractHistoricManager {
 
   public void deleteHistoricVariableInstanceByProcessInstanceId(String historicProcessInstanceId) {
     deleteHistoricVariableInstancesByProcessCaseInstanceId(historicProcessInstanceId, null);
+  }
+
+  public void deleteHistoricVariableInstanceByProcessInstanceIds(List<String> historicProcessInstanceIds) {
+    Context
+        .getCommandContext()
+        .getDbEntityManager().delete(HistoricVariableInstanceEntity.class, "deleteHistoricVariableInstanceByProcessDefinitionIds", historicProcessInstanceIds);
+  }
+
+  public void deleteHistoricVariableInstancesByTaskProcessInstanceIds(List<String> historicProcessInstanceIds) {
+    Context
+        .getCommandContext()
+        .getDbEntityManager().delete(HistoricVariableInstanceEntity.class, "deleteHistoricVariableInstanceByTaskProcessDefinitionIds", historicProcessInstanceIds);
   }
 
   public void deleteHistoricVariableInstanceByCaseInstanceId(String historicCaseInstanceId) {

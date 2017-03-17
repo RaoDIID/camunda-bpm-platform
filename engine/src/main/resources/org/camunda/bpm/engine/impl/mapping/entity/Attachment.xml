@@ -54,7 +54,12 @@
     delete from ${prefix}ACT_HI_ATTACHMENT 
     where ID_ = #{id} and REV_ = #{revision} 
   </delete>
-  
+
+  <delete id="deleteAttachmentByProcessInstanceIds">
+    delete from ${prefix}ACT_HI_ATTACHMENT
+    <include refid="selectAttachmentsByProcessInstanceIdsSql"/>
+  </delete>
+
   <!-- ATTACHMENT RESULTMAP -->
 
   <resultMap id="attachmentResultMap" type="org.camunda.bpm.engine.impl.persistence.entity.AttachmentEntity">
@@ -84,10 +89,30 @@
     select * from ${prefix}ACT_HI_ATTACHMENT where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
   </select>
 
+  <select id="selectContentIdsByProcessInstanceIds">
+    select distinct CONTENT_ID_ from ${prefix}ACT_HI_ATTACHMENT
+    <include refid="selectAttachmentsByProcessInstanceIdsSql"/>
+  </select>
+
   <select id="selectAttachmentByTaskIdAndAttachmentId" parameterType="map" resultMap="attachmentResultMap">
     select * from ${prefix}ACT_HI_ATTACHMENT 
     where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
     and ID_ = #{id,jdbcType=VARCHAR}
   </select>
+
+  <sql id="selectAttachmentsByProcessInstanceIdsSql">
+    where PROC_INST_ID_ IN
+    <foreach item="processInstanceId" index="index" collection="list" open="(" separator="," close=")">
+      #{processInstanceId}
+    </foreach>
+    OR
+    TASK_ID_ IN
+    (select distinct ID_ from ${prefix}ACT_HI_TASKINST
+    where PROC_INST_ID_ in
+    <foreach item="processInstanceId" index="index" collection="list" open="(" separator="," close=")">
+      #{processInstanceId}
+    </foreach>
+    )
+  </sql>
 
 </mapper>

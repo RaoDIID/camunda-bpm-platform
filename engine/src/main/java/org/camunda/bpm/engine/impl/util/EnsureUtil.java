@@ -144,6 +144,12 @@ public final class EnsureUtil {
     }
   }
 
+  public static void ensureEquals(String variableName, long obj1, long obj2) {
+    if (obj1 != obj2) {
+      throw generateException(ProcessEngineException.class, "", variableName, "value differs from expected");
+    }
+  }
+
   public static void ensurePositive(String variableName, Long value) {
     ensurePositive("", variableName, value);
   }

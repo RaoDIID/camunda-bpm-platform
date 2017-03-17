@@ -43,6 +43,29 @@ public class HistoricTaskInstanceManager extends AbstractHistoricManager {
     deleteHistoricTaskInstances("processInstanceId", processInstanceId);
   }
 
+  public void deleteHistoricTaskInstancesByProcessInstanceIds(List<String> processInstanceIds) {
+
+    CommandContext commandContext = Context.getCommandContext();
+
+    commandContext.getHistoricDetailManager().deleteHistoricDetailsByTaskProcessInstanceIds(processInstanceIds);
+    commandContext.getHistoricVariableInstanceManager().deleteHistoricVariableInstancesByTaskProcessInstanceIds(processInstanceIds);
+
+    commandContext
+        .getCommentManager()
+        .deleteCommentsByTaskProcessInstanceIds(processInstanceIds);
+
+    commandContext
+        .getAttachmentManager()
+        .deleteAttachmentsByProcessInstanceIds(processInstanceIds);
+
+    commandContext
+        .getHistoricIdentityLinkManager()
+        .deleteHistoricIdentityLinksLogByTaskProcessInstanceIds(processInstanceIds);
+
+    commandContext
+        .getDbEntityManager().delete(HistoricVariableInstanceEntity.class, "deleteHistoricTaskInstanceByProcessInstanceIds", processInstanceIds);
+  }
+
   public void deleteHistoricTaskInstancesByCaseInstanceId(String caseInstanceId) {
     deleteHistoricTaskInstances("caseInstanceId", caseInstanceId);
   }

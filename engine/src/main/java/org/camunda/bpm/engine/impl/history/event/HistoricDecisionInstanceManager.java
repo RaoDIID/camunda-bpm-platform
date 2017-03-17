@@ -80,6 +80,12 @@ public class HistoricDecisionInstanceManager extends AbstractHistoricManager {
     }
   }
 
+  public void deleteHistoricDecisionInstanceByProcessInstanceIds(List<String> processInstanceIds) {
+    getDbEntityManager().delete(HistoricDecisionInputInstanceEntity.class, "deleteHistoricDecisionInputInstanceByProcessInstanceIds", processInstanceIds);
+    getDbEntityManager().delete(HistoricDecisionOutputInstanceEntity.class, "deleteHistoricDecisionOutputInstanceByProcessInstanceIds", processInstanceIds);
+    getDbEntityManager().delete(HistoricExternalTaskLogEntity.class, "deleteHistoricDecisionInstanceByProcessInstanceIds", processInstanceIds);
+  }
+
   protected void deleteHistoricDecisionInputAndOutputInstances(String historicDecisionInstanceId) {
     Set<String> decisionInstanceIds = new HashSet<String>();
     decisionInstanceIds.add(historicDecisionInstanceId);

@@ -125,6 +125,23 @@
     delete from ${prefix}ACT_HI_DETAIL where ID_ = #{id}
   </delete>
 
+  <delete id="deleteHistoricDetailsByProcessInstanceIds">
+    delete from ${prefix}ACT_HI_DETAIL where PROC_INST_ID_ IN
+    <foreach item="processInstanceId" index="index" collection="list" open="(" separator="," close=")">
+      #{processInstanceId}
+    </foreach>
+  </delete>
+
+  <delete id="deleteHistoricDetailsByTaskProcessInstanceIds">
+    delete from ${prefix}ACT_HI_DETAIL where TASK_ID_ IN
+      (select distinct ID_ from ${prefix}ACT_HI_TASKINST
+        where PROC_INST_ID_ in
+        <foreach item="processInstanceId" index="index" collection="list" open="(" separator="," close=")">
+          #{processInstanceId}
+        </foreach>
+      )
+  </delete>
+
   <!-- HISTORIC DETAILS RESULTMAP -->
   <resultMap id="historicDetailResultMap" type="org.camunda.bpm.engine.impl.history.event.HistoricDetailEventEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
